@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <!-- CSS yahi par hai, alag file ki zaroorat nahi hai -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffeef2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+        .img-box {
+            height: 200px;
+            margin-bottom: 20px;
+        }
+        .img-box img {
+            max-height: 100%;
+            border-radius: 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        button {
+            padding: 10px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        #yes-btn { background-color: #4CAF50; color: white; }
+        #no-btn { background-color: #f44336; color: white; }
+        h1 { color: #d32f2f; font-size: 24px; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="card">
+        <div class="img-box">
+            <!-- Yahan apni pehli photo ka naam likho -->
+            <img id="display-img" src="pehli_photo.gif" alt="[Image of Valentine]">
+        </div>
+        <h1 id="question">Will you be my Valentine?</h1>
+        <div class="buttons">
+            <button id="yes-btn">Yes</button>
+            <button id="no-btn">No</button>
+        </div>
+    </div>
+
+    <!-- JavaScript bhi yahi hai -->
+    <script>
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const displayImg = document.getElementById('display-img');
+        const question = document.getElementById('question');
+
+        // Yahan apni photos ke sahi naam likho jo tumhare computer mein hain
+        const localImages = [
+            "sad_photo1.jpg",
+            "sad_photo2.png",
+            "sad_photo3.jpg",
+            "gussa_photo.jpg"
+        ];
+
+        const messages = [
+            "Pakka?",
+            "Ek baar aur soch lo...",
+            "Aise mat karo yaar!",
+            "Rona aa jayega mujhe :(",
+            "Plzzzz maan jao!"
+        ];
+
+        let step = 0;
+
+        noBtn.addEventListener('click', () => {
+            // No button ka text badlo
+            noBtn.innerText = messages[step % messages.length];
+
+            // Yes button bada karo
+            let currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = (currentSize + 20) + "px";
+            yesBtn.style.padding = (parseFloat(window.getComputedStyle(yesBtn).paddingTop) + 5) + "px " + 
+                                   (parseFloat(window.getComputedStyle(yesBtn).paddingLeft) + 10) + "px";
+
+            // Photo badlo (Local files use ho rahi hain)
+            if (step < localImages.length) {
+                displayImg.src = localImages[step];
+            }
+
+            step++;
+
+            // Agar yes button bahut bada ho jaye toh no button gayab kar do
+            if (currentSize > 100) {
+                noBtn.style.display = 'none';
+            }
+        });
+
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('card').innerHTML = `
+                <div class="img-box">
+                    <img src="final_happy_photo.gif" alt="[Image of Happy Valentine]">
+                </div>
+                <h1>Yayyy! I knew it! ❤️</h1>
+            `;
+        });
+    </script>
+</body>
+</html>
