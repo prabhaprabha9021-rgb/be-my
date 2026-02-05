@@ -3,127 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine?</title>
-    <!-- CSS yahi par hai, alag file ki zaroorat nahi hai -->
+    <title>Be My Valentine?</title>
     <style>
+        :root {
+            --primary-pink: #ffafbd;
+            --dark-pink: #ff4b2b;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #ffeef2;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            background: linear-gradient(to right, #ffafbd, #ffc3a0);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
-        .container {
-            text-align: center;
+
+        /* Floating Hearts Background */
+        .heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.6);
+            user-select: none;
+            pointer-events: none;
+            animation: float 5s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Letter Section */
+        #letter-container {
             background: white;
-            padding: 30px;
-            border-radius: 20px;
+            padding: 40px;
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.5s;
+            z-index: 10;
         }
-        .img-box {
-            height: 200px;
+
+        /* Main Question Section (Hidden initially) */
+        #main-content {
+            display: none;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .main-img {
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+            object-fit: cover;
             margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .img-box img {
-            max-height: 100%;
-            border-radius: 10px;
-        }
+
         .buttons {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+            margin-top: 20px;
+            min-height: 150px;
         }
+
         button {
-            padding: 10px 25px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 15px 30px;
+            font-size: 1.2rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
-        #yes-btn { background-color: #4CAF50; color: white; }
-        #no-btn { background-color: #f44336; color: white; }
-        h1 { color: #d32f2f; font-size: 24px; }
+
+        #yesBtn { background-color: #28a745; color: white; }
+        #noBtn { background-color: #dc3545; color: white; }
+
+        /* Confetti/Popper Effect */
+        #celebration {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            z-index: 20;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container" id="card">
-        <div class="img-box">
-            <!-- Yahan apni pehli photo ka naam likho -->
-            <img id="display-img" src="pehli_photo.gif" alt="[Image of Valentine]">
-        </div>
-        <h1 id="question">Will you be my Valentine?</h1>
+    <div id="heart-bg"></div>
+
+    <div id="letter-container" onclick="openLetter()">
+        <h2 style="color: var(--dark-pink)">💌 You have a message...</h2>
+        <p>Click to open</p>
+    </div>
+
+    <div id="main-content">
+        <h1 id="question-text" style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Will you be my Valentine?</h1>
+        
+        <img id="display-img" class="main-img" src="https://via.placeholder.com/250/ff4b2b/ffffff?text=Your+First+Photo" alt="Valentine Image">
+        
         <div class="buttons">
-            <button id="yes-btn">Yes</button>
-            <button id="no-btn">No</button>
+            <button id="yesBtn" onclick="handleYes()">Yes</button>
+            <button id="noBtn" onclick="handleNo()">No</button>
         </div>
     </div>
 
-    <!-- JavaScript bhi yahi hai -->
+    <div id="celebration">🎉💖🎊</div>
+
     <script>
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const displayImg = document.getElementById('display-img');
-        const question = document.getElementById('question');
+        let yesSize = 1;
+        let noSize = 1;
 
-        // Yahan apni photos ke sahi naam likho jo tumhare computer mein hain
-        const localImages = [
-            "sad_photo1.gif",
-            "sad_photo2.gif",
-            "sad_photo3.gif",
-            "gussa_photo.jpg"
-        ];
+        // Background Heart Generator
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.getElementById('heart-bg').appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 300);
 
-        const messages = [
-            "Pakka?",
-            "Ek baar aur soch lo...",
-            "Aise mat karo yaar!",
-            "Rona aa jayega mujhe :(",
-            "Plzzzz maan jao!"
-        ];
+        // Logic to switch from Letter to Question
+        function openLetter() {
+            document.getElementById('letter-container').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }
 
-        let step = 0;
+        // Logic for "No" button shrinking and "Yes" growing
+        function handleNo() {
+            yesSize += 0.5;
+            noSize -= 0.1;
+            
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
 
-        noBtn.addEventListener('click', () => {
-            // No button ka text badlo
-            noBtn.innerText = messages[step % messages.length];
+            yesBtn.style.transform = `scale(${yesSize})`;
+            noBtn.style.transform = `scale(${noSize})`;
 
-            // Yes button bada karo
-            let currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            yesBtn.style.fontSize = (currentSize + 20) + "px";
-            yesBtn.style.padding = (parseFloat(window.getComputedStyle(yesBtn).paddingTop) + 5) + "px " + 
-                                   (parseFloat(window.getComputedStyle(yesBtn).paddingLeft) + 10) + "px";
-
-            // Photo badlo (Local files use ho rahi hain)
-            if (step < localImages.length) {
-                displayImg.src = localImages[step];
+            if (noSize <= 0.2) {
+                noBtn.style.display = 'none'; // Hide if it gets too small
             }
+        }
 
-            step++;
-
-            // Agar yes button bahut bada ho jaye toh no button gayab kar do
-            if (currentSize > 100) {
-                noBtn.style.display = 'none';
-            }
-        });
-
-        yesBtn.addEventListener('click', () => {
-            document.getElementById('card').innerHTML = `
-                <div class="img-box">
-                    <img src="final_happy_photo.gif" alt="[Image of Happy Valentine]">
-                </div>
-                <h1>Yayyy! I knew it! ❤️</h1>
-            `;
-        });
+        // Final Logic
+        function handleYes() {
+            // Change the image to your "End" image
+            document.getElementById('display-img').src = "https://via.placeholder.com/250/28a745/ffffff?text=Success+Photo";
+            document.getElementById('question-text').innerText = "Yay! See you on the 14th! ❤️";
+            document.querySelector('.buttons').style.display = 'none';
+            
+            // Show celebration
+            const celeb = document.getElementById('celebration');
+            celeb.style.display = 'block';
+            
+            // Simple visual pop effect
+            celeb.animate([
+                { transform: 'translate(-50%, -50%) scale(0.5)', opacity: 0 },
+                { transform: 'translate(-50%, -50%) scale(1.5)', opacity: 1 }
+            ], { duration: 500, fill: 'forwards' });
+        }
     </script>
 </body>
 </html>
-
