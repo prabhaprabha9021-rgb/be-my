@@ -3,108 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
+    <title>Will You Be My Valentine?</title>
+    <!-- CSS yahi par hai, alag file ki zaroorat nahi hai -->
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background-color: #ffeef2;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #ffebee;
-            font-family: 'Arial', sans-serif;
             overflow: hidden;
         }
-
         .container {
             text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
         }
-
-        h1 {
-            color: #d32f2f;
-            font-size: 3rem;
+        .img-box {
+            height: 200px;
+            margin-bottom: 20px;
         }
-
+        .img-box img {
+            max-height: 100%;
+            border-radius: 10px;
+        }
         .buttons {
-            margin-top: 20px;
             display: flex;
-            gap: 20px;
             justify-content: center;
             align-items: center;
+            gap: 15px;
         }
-
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 10px 25px;
+            font-size: 18px;
+            font-weight: bold;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: 0.2s;
         }
-
-        #yesBtn {
-            background-color: #4caf50;
-            color: white;
-        }
-
-        #noBtn {
-            background-color: #f44336;
-            color: white;
-            position: absolute;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        img {
-            width: 200px;
-            border-radius: 20px;
-        }
+        #yes-btn { background-color: #4CAF50; color: white; }
+        #no-btn { background-color: #f44336; color: white; }
+        h1 { color: #d32f2f; font-size: 24px; }
     </style>
 </head>
 <body>
 
-    <div id="questionSection" class="container">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG93bm96ZzR0bm96ZzR0bm96ZzR0bm96ZzR0bm96ZzR0JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJLufpN61i/giphy.gif" alt="Cute gif">
-        <h1>Will you be my Valentine?</h1>
+    <div class="container" id="card">
+        <div class="img-box">
+            <!-- Yahan apni pehli photo ka naam likho -->
+            <img id="display-img" src="pehli_photo.jpg" alt="[Image of Valentine]">
+        </div>
+        <h1 id="question">Will you be my Valentine?</h1>
         <div class="buttons">
-            <button id="yesBtn">Yes</button>
-            <button id="noBtn">No</button>
+            <button id="yes-btn">Yes</button>
+            <button id="no-btn">No</button>
         </div>
     </div>
 
-    <div id="responseSection" class="container hidden">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG93bm96ZzR0bm96ZzR0bm96ZzR0bm96ZzR0bm96ZzR0JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlvU6p3kWdx6dy8/giphy.gif" alt="Happy gif">
-        <h1>Yay! See you on the 14th! ❤️</h1>
-    </div>
-
+    <!-- JavaScript bhi yahi hai -->
     <script>
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const questionSection = document.getElementById('questionSection');
-        const responseSection = document.getElementById('responseSection');
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const displayImg = document.getElementById('display-img');
+        const question = document.getElementById('question');
 
-        let yesFontSize = 1.2;
+        // Yahan apni photos ke sahi naam likho jo tumhare computer mein hain
+        const localImages = [
+            "sad_photo1.jpg",
+            "sad_photo2.png",
+            "sad_photo3.jpg",
+            "gussa_photo.jpg"
+        ];
 
-        noBtn.addEventListener('mouseover', () => {
-            // Move the "No" button randomly
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+        const messages = [
+            "Pakka?",
+            "Ek baar aur soch lo...",
+            "Aise mat karo yaar!",
+            "Rona aa jayega mujhe :(",
+            "Plzzzz maan jao!"
+        ];
 
-            // Make the "Yes" button bigger
-            yesFontSize += 0.5;
-            yesBtn.style.fontSize = `${yesFontSize}rem`;
-            yesBtn.style.padding = `${15 + (yesFontSize * 5)}px ${30 + (yesFontSize * 10)}px`;
+        let step = 0;
+
+        noBtn.addEventListener('click', () => {
+            // No button ka text badlo
+            noBtn.innerText = messages[step % messages.length];
+
+            // Yes button bada karo
+            let currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = (currentSize + 20) + "px";
+            yesBtn.style.padding = (parseFloat(window.getComputedStyle(yesBtn).paddingTop) + 5) + "px " + 
+                                   (parseFloat(window.getComputedStyle(yesBtn).paddingLeft) + 10) + "px";
+
+            // Photo badlo (Local files use ho rahi hain)
+            if (step < localImages.length) {
+                displayImg.src = localImages[step];
+            }
+
+            step++;
+
+            // Agar yes button bahut bada ho jaye toh no button gayab kar do
+            if (currentSize > 100) {
+                noBtn.style.display = 'none';
+            }
         });
 
         yesBtn.addEventListener('click', () => {
-            questionSection.classList.add('hidden');
-            responseSection.classList.remove('hidden');
+            document.getElementById('card').innerHTML = `
+                <div class="img-box">
+                    <img src="final_happy_photo.jpg" alt="[Image of Happy Valentine]">
+                </div>
+                <h1>Yayyy! I knew it! ❤️</h1>
+            `;
         });
     </script>
 </body>
